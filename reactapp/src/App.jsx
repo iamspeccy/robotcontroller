@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Buttons from './buttons.jsx'
+import Buttons from './Buttons.jsx'
 import { FaRobot } from "react-icons/fa";
 import AnimatedLogo from './assets/Logo.jsx'
 

@@ -1,5 +1,5 @@
 // 1. Import Section (Optional for modern React, but good for CSS/Hooks)
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import React from 'react';
 import { FaArrowUp, FaArrowDown, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
@@ -7,30 +7,32 @@ import { FaArrowUp, FaArrowDown, FaArrowLeft, FaArrowRight } from "react-icons/f
 const Buttons = () => {
     const [display, setDisplay] = useState("idle")
     
+useEffect(() => {
+    const handleKeyDown = (event) => {
+      switch (event.key) {
+        case 'ArrowUp':    motor('forward');  break;
+        case 'ArrowDown':  motor('backward'); break;
+        case 'ArrowLeft':  motor('left');     break;
+        case 'ArrowRight': motor('right');    break;
+         // Spacebar to stop
+        default: break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Cleanup: Remove listener if component closes to prevent memory leaks
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Logic (like click handlers) goes here
+  const motor = (direction) => {
+    fetch (`http://172.20.10.2:5000/${direction}`);
+    setDisplay(`${direction}`);
+    console.log(`${direction}`);
+  }
 
   
-  // Logic (like click handlers) goes here
-  const forward = () => {
-    fetch ("http://172.20.10.2:5000/forward");
-    setDisplay("Forward");
-    console.log("Forward!");
-  };
-  const left = () => {
-    fetch ("http://172.20.10.2:5000/left");
-    setDisplay("Left");
-    console.log("Left");
-  };
-  const backward = () => {
-    fetch ("http://172.20.10.2:5000/backward");
-    setDisplay("Backward");
-    console.log("Backward");
-  };
-  const right = () => {
-    fetch ("http://172.20.10.2:5000/right");
-    setDisplay("Right");
-    console.log("Right");
-  };
-
   // 3. Return Section (The HTML-like JSX)
   return (
     
@@ -38,17 +40,17 @@ const Buttons = () => {
         <div>
             {display}
         </div>
-      <button className="btn" onClick={forward}>
+      <button className="btn" onClick={() => motor("forward")}>
         <FaArrowUp />
       </button>
       <div>
-        <button className="btn" onClick={left}>
+        <button className="btn" onClick={() => motor("left")}>
             <FaArrowLeft />
         </button>
-        <button className="btn" onClick={backward}>
+        <button className="btn" onClick={() => motor("backward")}>
             <FaArrowDown />
         </button>
-        <button className="btn" onClick={right}>
+        <button className="btn" onClick={() => motor("right")}>
             <FaArrowRight />
         </button>
       </div>
